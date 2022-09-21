@@ -8,10 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class partida extends Model
 {
     use HasFactory;
+        /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+
+        'valor_dado1',
+        'valor_dado2',
+        'resultado',
+        'porcentaje_exito',
+        'user_id'
+        
+    ];
 
 
      // Relacion uno a muchos (inversa)
-     
+
 
     public function usuario()
     {
