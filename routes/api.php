@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\LoginController;
 use App\Http\Controllers\API\userController;
+use App\Http\Controllers\API\gameController;
 
 /*
 |--------------------------------------------------------------------------
