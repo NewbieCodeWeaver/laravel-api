@@ -31,7 +31,6 @@ class gameController extends Controller
          $partida->valor_dado1 = $valor_dado1;
          $partida->valor_dado2 = $valor_dado2;
          $partida->resultado = $resultado;
-         $partida->porcentaje_exito = 1;
          $partida->user_id = $id;
 
      $partida->save(); 
