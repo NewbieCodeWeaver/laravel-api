@@ -18,7 +18,6 @@ class partida extends Model
         'valor_dado1',
         'valor_dado2',
         'resultado',
-        'porcentaje_exito',
         'user_id'
         
     ];
