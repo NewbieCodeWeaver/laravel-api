@@ -35,7 +35,7 @@ class UserController extends Controller
 
 
         $playerPlays = partida::join('users' , 'partidas.user_id' , '=' , 'users.id')
-        ->select('users.name', 'partidas.id', 'partidas.valor_dado1', 'partidas.valor_dado2', 'partidas.resultado', 'partidas.porcentaje_exito')
+        ->select('users.name', 'partidas.id', 'partidas.valor_dado1', 'partidas.valor_dado2', 'partidas.resultado')
         ->get();
        
           return $playerPlays;  
