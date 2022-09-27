@@ -18,7 +18,6 @@ class CreatePartidasTable extends Migration
             $table->tinyInteger('valor_dado1');
             $table->tinyInteger('valor_dado2');
             $table->tinyInteger('resultado');
-            $table->tinyInteger('porcentaje_exito');
             $table->timestamps();
 
             $table->unsignedBigInteger('user_id')->nullable();;
