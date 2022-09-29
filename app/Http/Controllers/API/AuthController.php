@@ -18,8 +18,6 @@ class AuthController extends Controller
             'nickname' =>'required|min:3|max:50',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
-            'rol' =>'required| in:usuario,administrador',
-
 
         ]);
 
