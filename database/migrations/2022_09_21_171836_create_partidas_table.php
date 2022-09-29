@@ -19,7 +19,6 @@ class CreatePartidasTable extends Migration
             $table->tinyInteger('valor_dado2');
             $table->tinyInteger('resultado');
             $table->timestamps();
-
             $table->unsignedBigInteger('user_id')->nullable();;
             $table->foreign('user_id')
             ->references('id')->on('users')
