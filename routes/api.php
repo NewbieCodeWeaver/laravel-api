@@ -28,7 +28,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-// ->middleware('auth');
+Route::middleware('auth:api')->group(function () {
 
 Route::put('players/{id}', [userController::class, 'userChangeUsername']); // modifica el nom del jugador/a.
 Route::post('players/{id}/games/', [gameController::class, 'userRolldice']); // un jugador/a específic realitza una tirada dels daus.
@@ -38,3 +38,5 @@ Route::get('players/{id}/games', [userController::class, 'getUserPlays']); // re
 Route::get('players/ranking', [userController::class, 'getUsersRanking']); // retorna el rànquing mitjà de tots els jugadors/es del sistema. És a dir, el percentatge mitjà d’èxits.
 Route::get('players/ranking/loser', [userController::class, 'getWorstUserRank']); // retorna el jugador/a amb pitjor percentatge d’èxit
 Route::get('players/ranking/winner', [userController::class, 'getBestUserRank']); // retorna el jugador/a amb millor percentatge d’èxit.
+
+});
