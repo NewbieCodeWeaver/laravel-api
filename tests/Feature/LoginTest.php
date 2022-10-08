@@ -56,7 +56,7 @@ public function user_log_in_with_empty_nickname()
 
  /** @test */
 
-public function user_log_in_WithEmptyPassword()
+public function user_log_in_with_empty_password()
 
 {
 
