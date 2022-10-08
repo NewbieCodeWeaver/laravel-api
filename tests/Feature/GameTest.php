@@ -13,11 +13,15 @@ class GameTest extends TestCase
 
 {
 
-/** @test */
-public function unauth_user_can_get_ranking_winner() {
+use RefreshDatabase;   
 
+/** @test */
+public function unauth_user_cant_get_ranking_winner() {
+
+    
     $this->artisan('passport:install');
 
+    
     $user= User::factory()->create();
  
     $response = $this->get('/api/players/ranking/winner');
