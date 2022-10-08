@@ -9,9 +9,14 @@ use Tests\TestCase;
 class RegisterTest extends TestCase
 {
 
+    use RefreshDatabase;
+
      /** @test */
-     public function registerUser()
+     public function user_can_register()
+
      {
+
+     $this->artisan('passport:install');
 
      $this->post('api/players', [
      'name' => 'user1',
@@ -27,8 +32,11 @@ class RegisterTest extends TestCase
  
  
    /** @test */
-      public function registerUserWithEmptyName()
+      public function user_cant_register_with_empty_nickname()
+     
       {
+
+        $this->artisan('passport:install');
 
         $this->post('api/players', [
         'name' => "",
@@ -47,9 +55,12 @@ class RegisterTest extends TestCase
  
  
   /** @test */
-   public function registerUserWithEmptyPassword()
+   public function user_cant_register_with_empty_password()
    
    {
+
+    $this->artisan('passport:install');
+
      $this->post('api/players', [
      'name' => "user2",
      'nickname' => 'user2',
@@ -67,8 +78,11 @@ class RegisterTest extends TestCase
  
  
  /** @test */
- public function registerUserWithEmptyPasswordConfirmation()
+ public function user_cant_register_with_empty_password_confirmation()
+ 
  {
+
+   $this->artisan('passport:install');
 
    $this->post('api/players', [
    'name' => "user2",
