@@ -154,8 +154,6 @@ public function role_admin_can_get_users_ranking() {
 }
 
 
-
-
 /** @test */
 public function role_user_cant_get_users_ranking() {
 
@@ -188,11 +186,8 @@ public function role_user_can_get_they_plays() {
         ->create([
         'is_admin' => NULL,
      ])); 
-
-
-    $userID = $user['id'];
  
-    $response = $this->get('api/players/' . $userID .  '/games');
+    $response = $this->get('api/players/' . $user->id.  '/games');
 
     $response->assertOk(200);
 
@@ -207,15 +202,13 @@ public function role_user_cant_get_others_plays() {
     $this->artisan('passport:install');
 
     Passport::actingAs(
-       $user= User::factory()
-        ->create([
-        'is_admin' => NULL,
-     ])); 
+       $user1= User::factory()
+        ->create()); 
 
-
-    $userID = $user['id'] + 1;
+        $user2 = User::factory()
+        ->create();
  
-    $response = $this->get('api/players/' . $userID .  '/games');
+    $response = $this->get('api/players/' . $user2 .  '/games');
 
     $response->assertStatus(401); // Unauthorized
 
@@ -235,15 +228,15 @@ public function admin_user_can_get_any_user_plays() {
     $this->artisan('passport:install');
 
     Passport::actingAs(
-       $user= User::factory()
+       $admin= User::factory()
         ->create([
         'is_admin' => 1,
      ])); 
 
-
-    $userID = $user['id'] + 1;
+     $user= User::factory()
+     ->create();
  
-    $response = $this->get('api/players/' . $userID .  '/games');
+    $response = $this->get('api/players/' . $user .  '/games');
 
     $response->assertStatus(200);
 
@@ -283,12 +276,15 @@ public function user_cant_remove_other_user_plays() {
     $this->artisan('passport:install');
 
     Passport::actingAs(
-    $user = User::factory()
-       ->has(partida::factory()->count(2))
-        ->create()); 
+    $user1 = User::factory()
+        ->create());
 
+        
+    $user2= User::factory()
+    ->has(partida::factory()->count(2))
+        ->create();
  
-    $response = $this->delete('api/players/{id}/games');
+    $response = $this->delete('api/players/' . $user2 . '/games');
 
 
         $response->assertStatus(401);
