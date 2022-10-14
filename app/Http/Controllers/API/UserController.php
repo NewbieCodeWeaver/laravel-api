@@ -7,17 +7,25 @@ use Illuminate\Http\Request;
 use App\Models\User;
 Use App\Models\partida;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function userChangeUsername(Request $request, $id) {
 
 
-        if (empty($id)) {
+      $authUser = Auth::user();
+      $user = user::find($id);
 
-           return "No existe un usuario con esa id";
 
-        }
+      if ($authUser->id == $id || $authUser->is_admin == 1 && $user) {
+
+
+        $request->validate([
+
+          'nickname' =>'required|min:3|max:50',
+       
+        ]);
 
         $user = user::find($id);
 
@@ -25,73 +33,100 @@ class UserController extends Controller
 
         $user->save();
 
+        return response('Username changed correctly', 200);
 
-        return "El nombre de usuario ha sido cambiado correctamente";
+    
+      } else {
 
-        }
+
+        return response ([
+
+        "message" => "Unauthorized."
+      
+        ], 401);} }
 
 
        public function getUserPlays($id) {
 
+        $authUser = Auth::user();
+        $userPlays = partida::all()
+        ->where('user_id', '=', $id);
 
-        $playerPlays = partida::join('users' , 'partidas.user_id' , '=' , 'users.id')
-        ->select('users.name', 'partidas.id', 'partidas.valor_dado1', 'partidas.valor_dado2', 'partidas.resultado')
-        ->get();
-       
-          return $playerPlays;  
+  
+        if ($authUser->id == $id || $authUser->is_admin == 1 && $userPlays) {
+
+          if ($userPlays->isEmpty()) {
+
+            return response('No plays to show', 200);
+  
+          }
+
+        $modeloPartida = new partida();
+
+        $playerPlays = $modeloPartida->getPlayerPlays($id);
+
+        $modelUser = new user();
+
+        $userPercentage = $modelUser->getUserPercentage($id);
+
+            return [$playerPlays, $userPercentage];
+
+
+        } else {
+
+          return response ([
+  
+            "message" => "Unauthorized."
+        
+          ], 401);}
         
         }
+       
 
+        public function getUsersInfo() { 
+          
+          $modeloUsers = new user();
+          $playerPlays =  $modeloUsers->getPlayerPlays();
 
-        public function getUsersInfo() {
-
-         // SELECT users.name as Player, 
-         // ROUND(100 * SUM(resultado = 7) / COUNT(resultado)) as WinsPercentage
-         // FROM `users` join `partidas` ON partidas.user_id = users.id group by users.name
-
-          $playerPlays =  DB::table('users')
-          ->select('users.name as Player', DB::raw('ROUND(100 * SUM(resultado = 7) / COUNT(resultado)) as WinsPercentage'))
-          ->join('partidas','partidas.user_id','=','users.id')
-          ->groupBy('users.name')
-          ->get();
-
-
-        return $playerPlays;
+          return $playerPlays;
         
        
         }
 
         public function getUsersRanking() {
 
-         // SELECT ROUND((SUM(resultado = 7) / COUNT(resultado) *100)) as PartidasTotalesGanadas
-         // FROM `users` join `partidas` ON partidas.user_id = users.id
+         $modeloUsers = new user();
+         $usersRanking = $modeloUsers->getUsersRanking();
 
 
-        $usersRanking = DB::table('users')
-        ->select(DB::raw('ROUND(SUM(resultado = 7) / COUNT(resultado) *100) as PartidasTotalesGanadas'))
-        ->join('partidas','partidas.user_id','=','users.id')
-        ->get();
+          if (is_null($usersRanking)) {
+
+            return response ([
+
+             "message" => "We have no data to show yet"
+          
+            ], 200);}
 
 
-        return $usersRanking;
+          return $usersRanking;
 
          }
 
 
         public function getWorstUserRank() {
 
-         // SELECT users.name as Player, 
-         // ROUND(100 * SUM(resultado = 7) / COUNT(resultado)) as WinsPercentage
-         // FROM `users` join `partidas` ON partidas.user_id = users.id
-         // group by users.name order by WinsPercentage ASC LIMIT 1
-       
-         $userWorstRank =  DB::table('users')
-        ->select('users.name as Player', DB::raw('ROUND(100 * SUM(resultado = 7) / COUNT(resultado)) as WinsPercentage'))
-        ->join('partidas','partidas.user_id','=','users.id')
-        ->groupBy('users.name')
-        ->orderBy('WinsPercentage', 'ASC')
-        ->limit(1)
-        ->get();
+          $modeloUsers = new user();
+          $userWorstRank = $modeloUsers->getWostRank();
+
+        
+        if($userWorstRank->isEmpty()) {
+
+          return response ([
+
+            "message" => "We have no data to show yet"
+        
+          ], 200);}
+
        
        
         return $userWorstRank;
@@ -101,21 +136,20 @@ class UserController extends Controller
 
         public function getBestUserRank() {
 
-        // SELECT users.name as Player, 
-        // ROUND(100 * SUM(resultado = 7) / COUNT(resultado)) as WinsPercentage
-        // FROM `users` join `partidas` ON partidas.user_id = users.id
-        // group by users.name order by WinsPercentage ASC LIMIT 1
-       
-        $userBestRank =  DB::table('users')
-        ->select('users.name as Player', DB::raw('ROUND(100 * SUM(resultado = 7) / COUNT(resultado)) as WinsPercentage'))
-        ->join('partidas','partidas.user_id','=','users.id')
-        ->groupBy('users.name')
-        ->orderBy('WinsPercentage', 'DESC')
-        ->limit(1)
-        ->get();
+        $modeloUsers = new user();
+        $userBestRank = $modeloUsers->getUserBestRank();
+
+          if($userBestRank->isEmpty()) {
+
+            return response ([
+  
+              "message" => "We have no data to show yet"
+          
+            ], 200);}
+
        
        
         return $userBestRank;
                
               
-        } }
+}}
