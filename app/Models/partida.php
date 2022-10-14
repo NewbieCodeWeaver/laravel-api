@@ -34,4 +34,29 @@ class partida extends Model
 
 
 
+    public function getPlayerPlays($id) {
+
+
+        $playerPlays = partida::join('users' , 'partidas.user_id' , '=' , 'users.id')
+        ->select('users.name', 'partidas.id', 'partidas.valor_dado1', 'partidas.valor_dado2', 'partidas.resultado')
+       ->where('users.id', '=', $id)
+        ->get();
+
+
+        return $playerPlays;
+
+
+    }
+
+    public function getUserPlays($id) {
+ 
+        $userPlays = partida::all()
+        ->where('user_id', '=', $id);
+
+        return $userPlays;
+
+    }
+
+
+
 }
