@@ -48,12 +48,9 @@ class UserController extends Controller
 
        public function getUserPlays($id) {
 
-
         $authUser = Auth::user();
         $userPlays = partida::all()
         ->where('user_id', '=', $id);
-
-        // return $userPlays;
 
   
         if ($authUser->id == $id || $authUser->is_admin == 1 && $userPlays) {
@@ -63,22 +60,14 @@ class UserController extends Controller
             return response('No plays to show', 200);
   
           }
-        
 
-          $playerPlays = partida::join('users' , 'partidas.user_id' , '=' , 'users.id')
-          ->select('users.name', 'partidas.id', 'partidas.valor_dado1', 'partidas.valor_dado2', 'partidas.resultado')
-         ->where('users.id', '=', $id)
-          ->get();
-      
-          // SELECT ROUND((SUM(resultado = 14) / COUNT(resultado) *100)) as PartidasTotalesGanadas
-          // FROM `users` join `partidas` ON partidas.user_id = users.id WHERE users.id = 15
+        $modeloPartida = new partida();
 
-          $userPercentage = DB::table('users')
-          ->select(DB::raw('ROUND(SUM(resultado = 14) / COUNT(resultado) *100) as PorcentajePartidasGanadas'))
-          ->join('partidas','partidas.user_id','=','users.id')
-          ->where('users.id','=', $id)
-          ->get();
+        $playerPlays = $modeloPartida->getPlayerPlays($id);
 
+        $modelUser = new user();
+
+        $userPercentage = $modelUser->getUserPercentage($id);
 
             return [$playerPlays, $userPercentage];
 
@@ -94,19 +83,10 @@ class UserController extends Controller
         }
        
 
-        public function getUsersInfo() {  
-
-         // SELECT users.name as Player, 
-         // ROUND(100 * SUM(resultado = 14) / COUNT(resultado)) as WinsPercentage
-         // FROM `users` join `partidas` ON partidas.user_id = users.id group by users.name
-
-
-          $playerPlays =  DB::table('users')
-          ->select('users.name as Player',  DB::raw('ROUND(100 * SUM(resultado = 14) / COUNT(resultado)) as WinsPercentage'))
-          ->leftjoin('partidas','partidas.user_id','=','users.id')
-          ->groupBy('users.name')
-          ->get();
-
+        public function getUsersInfo() { 
+          
+          $modeloUsers = new user();
+          $playerPlays =  $modeloUsers->getPlayerPlays();
 
           return $playerPlays;
         
@@ -115,14 +95,8 @@ class UserController extends Controller
 
         public function getUsersRanking() {
 
-         // SELECT ROUND((SUM(resultado = 14) / COUNT(resultado) *100)) as PartidasTotalesGanadas
-         // FROM `users` join `partidas` ON partidas.user_id = users.id
-
-
-        $usersRanking = DB::table('users')
-        ->select(DB::raw('ROUND(SUM(resultado = 14) / COUNT(resultado) *100) as PorcentajeMedioExitos'))
-        ->join('partidas','partidas.user_id','=','users.id')
-        ->get();
+         $modeloUsers = new user();
+         $usersRanking = $modeloUsers->getUsersRanking();
 
 
           if (is_null($usersRanking)) {
@@ -141,18 +115,8 @@ class UserController extends Controller
 
         public function getWorstUserRank() {
 
-         // SELECT users.name as Player, 
-         // ROUND(100 * SUM(resultado = 14) / COUNT(resultado)) as WinsPercentage
-         // FROM `users` join `partidas` ON partidas.user_id = users.id
-         // group by users.name order by WinsPercentage ASC LIMIT 1
-       
-         $userWorstRank =  DB::table('users')
-        ->select('users.name as Player', DB::raw('ROUND(100 * SUM(resultado = 14) / COUNT(resultado)) as WinsPercentage'))
-        ->join('partidas','partidas.user_id','=','users.id')
-        ->groupBy('users.name')
-        ->orderBy('WinsPercentage', 'ASC')
-        ->limit(1)
-        ->get();
+          $modeloUsers = new user();
+          $userWorstRank = $modeloUsers->getWostRank();
 
         
         if($userWorstRank->isEmpty()) {
@@ -172,19 +136,8 @@ class UserController extends Controller
 
         public function getBestUserRank() {
 
-        // SELECT users.name as Player, 
-        // ROUND(100 * SUM(resultado = 14) / COUNT(resultado)) as WinsPercentage
-        // FROM `users` join `partidas` ON partidas.user_id = users.id
-        // group by users.name order by WinsPercentage ASC LIMIT 1
-       
-       
-        $userBestRank =  DB::table('users')
-        ->select('users.name as Player', DB::raw('ROUND(100 * SUM(resultado = 14) / COUNT(resultado)) as WinsPercentage'))
-        ->join('partidas','partidas.user_id','=','users.id')
-        ->groupBy('users.name')
-        ->orderBy('WinsPercentage', 'DESC')
-        ->limit(1)
-        ->get();
+        $modeloUsers = new user();
+        $userBestRank = $modeloUsers->getUserBestRank();
 
           if($userBestRank->isEmpty()) {
 

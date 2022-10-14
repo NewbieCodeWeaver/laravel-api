@@ -61,10 +61,9 @@ class gameController extends Controller
     public function removePlays(Request $request, $id) {
 
         $authUser = Auth::user();
-        $userPlays = partida::all()
-        ->where('user_id', '=', $id);
 
-       // return $userPlays;
+        $modeloPartida = new partida();
+        $userPlays = $modeloPartida->getUserPlays($id);
 
         if ($authUser->id == $id || $authUser->is_admin == 1 && $userPlays->isNotEmpty()) {
 
