@@ -154,4 +154,13 @@ class User extends Authenticatable
 
      }
 
+     public function checkAdmin($authUser) {
+
+       if ($authUser->is_admin) {
+
+        return 1;
+       }
+
+     }
+
 }
