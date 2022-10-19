@@ -12,10 +12,16 @@ class AuthController extends Controller
 
     public function register(Request $request) {
 
+        if (empty($request->nickname)) {
+
+            $request->request->add(['nickname' => 'Anonimo']);
+
+        }
+
         $validatedData = $request->validate ([
 
-            'name' => 'required|min:3|max:50',
-            'nickname' =>'required|min:3|max:50',
+            'name' => 'nullable|min:3|max:50',
+            'nickname' =>'nullable|min:3|max:50',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed',
 
