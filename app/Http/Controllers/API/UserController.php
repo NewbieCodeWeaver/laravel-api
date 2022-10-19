@@ -17,8 +17,11 @@ class UserController extends Controller
       $authUser = Auth::user();
       $user = user::find($id);
 
+      $modeloUser = new User();
+      $isAdmin = $modeloUser->checkAdmin($authUser);
 
-      if ($authUser->id == $id || $authUser->is_admin == 1 && $user) {
+
+      if ($authUser->id == $id || $isAdmin && $user) {
 
 
         $request->validate([
@@ -49,15 +52,19 @@ class UserController extends Controller
        public function getUserPlays($id) {
 
         $authUser = Auth::user();
+
+        $modeloUser = new User();
+        $isAdmin = $modeloUser->checkAdmin($authUser);
+
         $userPlays = partida::all()
         ->where('user_id', '=', $id);
 
   
-        if ($authUser->id == $id || $authUser->is_admin == 1 && $userPlays) {
+        if ($authUser->id == $id || $isAdmin && $userPlays) {
 
           if ($userPlays->isEmpty()) {
 
-            return response('No plays to show', 200);
+            return response()->json(['Number of plays' => 0], 201); 
   
           }
 
@@ -116,7 +123,9 @@ class UserController extends Controller
         public function getWorstUserRank() {
 
           $modeloUsers = new user();
-          $userWorstRank = $modeloUsers->getWostRank();
+          $userWorstRank = $modeloUsers->getWorstRank();
+
+          return $userWorstRank;
 
         
         if($userWorstRank->isEmpty()) {
@@ -136,14 +145,14 @@ class UserController extends Controller
 
         public function getBestUserRank() {
 
-        $modeloUsers = new user();
-        $userBestRank = $modeloUsers->getUserBestRank();
+          $modeloUsers = new user();
+          $userBestRank = $modeloUsers->getUserBestRank();
 
           if($userBestRank->isEmpty()) {
 
             return response ([
   
-              "message" => "We have no data to show yet"
+            "message" => "We have no data to show yet"
           
             ], 200);}
 

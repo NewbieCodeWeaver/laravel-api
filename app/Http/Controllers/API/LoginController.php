@@ -12,7 +12,7 @@ class LoginController extends Controller
 
         $credentials = $request->validate([
 
-            'nickname'=> 'required',
+            'email'=> 'required',
             'password' => 'required'
         ]);
 
@@ -20,7 +20,7 @@ class LoginController extends Controller
 
             return response ([
 
-                "message" => "Usuario y/o contraseña incorrecta."
+                "message" => "E-mail y/o contraseña incorrecta."
             
             ], 401);
         }
