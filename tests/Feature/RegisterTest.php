@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
 
 class RegisterTest extends TestCase
 {
@@ -19,11 +20,11 @@ class RegisterTest extends TestCase
      $this->artisan('passport:install');
 
      $this->post('api/players', [
-     'name' => 'user1',
-     'nickname' => 'user1',
-     'email' => 'user1@user1.net',
-     'password' => '123456',
-     'password_confirmation' => '123456'])
+     'name' => 'user6',
+     'nickname' => 'user6',
+     'email' => 'user6@user6.com',
+     'password' => 'user6',
+     'password_confirmation' => 'user6'])
      ->assertStatus(200);
          $this->assertDatabaseCount('users', 1);
     
@@ -32,7 +33,7 @@ class RegisterTest extends TestCase
  
  
    /** @test */
-      public function user_cant_register_with_empty_nickname()
+      public function user_can_register_with_empty_name()
      
       {
 
@@ -45,12 +46,30 @@ class RegisterTest extends TestCase
         'password' => '123456',
         'password_confirmation' => '123456'
         ])
-        ->assertInvalid([
-         'name' => 'The name field is required.',
- 
-     ]);
+        ->assertStatus(200);
      
       }
+
+   /** @test */
+   public function user_gets_anonimo_username_when_leaves_nickname_empty()
+     
+   {
+
+     $this->artisan('passport:install');
+
+     $this->post('api/players', [
+     'name' => "user2",
+     'nickname' => '',
+     'email' => 'user2@user2.net',
+     'password' => '123456',
+     'password_confirmation' => '123456'
+     ]);
+     $this->assertDatabaseHas('users', [
+      'nickname' => 'Anonimo',
+  ]);
+  
+   }
+
  
  
  
