@@ -189,7 +189,7 @@ public function role_user_can_get_they_plays() {
  
     $response = $this->get('api/players/' . $user->id.  '/games');
 
-    $response->assertOk(200);
+    $response->assertStatus(201);
 
 
 
@@ -238,7 +238,7 @@ public function admin_user_can_get_any_user_plays() {
  
     $response = $this->get('api/players/' . $user .  '/games');
 
-    $response->assertStatus(200);
+    $response->assertStatus(201);
 
 
 }

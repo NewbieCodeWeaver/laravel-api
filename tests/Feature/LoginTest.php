@@ -13,18 +13,20 @@ class LoginTest extends TestCase
 use RefreshDatabase;    
 
 /** @test */
-public function user_log_in()
+public function user_can_log_in()
 
 {
 
     $this->artisan('passport:install');
 
     $user = User::factory()
-    ->create(['password' => bcrypt($password = '123456')]);
+    ->create(['password' => bcrypt($password = '123456')]
+
+);
 
     $this->post('api/login', 
     
-    ['nickname' => $user->nickname,
+    ['email' => $user->email,
      'password' => $password])
     ->assertStatus(200);
     
@@ -35,7 +37,7 @@ public function user_log_in()
 
  /** @test */
 
-public function user_log_in_with_empty_nickname()
+public function user_cant_log_in_with_empty_email()
 {
 
     $this->artisan('passport:install');
@@ -45,10 +47,10 @@ public function user_log_in_with_empty_nickname()
 
     $this->post('api/login', 
     
-    ['nickname' => '',
+    ['email' => '',
      'password' => $password])
      ->assertInvalid([
-        'nickname' => 'The nickname field is required.',
+        'email' => 'The email field is required.',
 
     ]);
 }
@@ -56,7 +58,7 @@ public function user_log_in_with_empty_nickname()
 
  /** @test */
 
-public function user_log_in_with_empty_password()
+public function user_cant_log_in_with_empty_password()
 
 {
 
@@ -67,7 +69,7 @@ public function user_log_in_with_empty_password()
 
     $this->post('api/login', 
     
-    ['nickname' => $user->nickname,
+    ['email' => $user->email,
      'password' => ""])
      ->assertInvalid([
         'password' => 'The password field is required.',
