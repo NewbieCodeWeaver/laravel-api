@@ -1,61 +1,61 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Dices Game
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Juego de dados utilizando la arquitectura API REST. Permite a los usuarios registarse, realizar partidas, ver los ganadores y perdedores del juego así como el ranking de los usuarios. Existe un usuario con permisos de administrador que acceder a toda la lista de usuarios y todas las partidas del juego. La API utiliza un sistema de autentificación OAuth2 que aumenta la seguridad de la alicación. 
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tecnologies
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* LARAVEL
+* LARAVEL PASSPORT
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Installation
 
-## Laravel Sponsors
+```
+# Clone the repository
+$ git clone https://github.com/carlos-full-stack/dices-game-api-it-academy.git
+$ cd dices-game-api-it-academy
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+# Install dependecies
+$ composer install
+$ composer require laravel/passport:*
 
-### Premium Partners
+# Generate database (Copy .env.example into .env and configure database credentials)
+$ php artisan migrate
+$ php artisan db:seed
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
+# Generate keys
+$ php artisan passport:keys
+$ php artisan passport:client --personal
 
-## Contributing
+# Run server
+$ php artisan serve
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Endpoints
 
-## Code of Conduct
+| HTTP Request | Request URL                 | Description           | Auth            |
+|--------------|-----------------------------|-----------------------|-----------------|
+| **POST**     | /api/players                | User registration     | No              |
+| **POST**     | /api/login                  | User login            | No              |
+| **POST**     | /api/players/{id}/games/    | User roll dice        | ApiToken        |
+| **PUT**      | /api/players/{id}           | Username change       | ApiToken        |
+| **DELETE**   | /api/players/{id}/games     | Username remove plays | Apitoken        |
+| **GET**      | /api/players/               | Get list of players   | ApiToken, admin |
+| **GET**      | /api/players/{id}/games     | Get user plays        | ApiToken, admin |
+| **GET**      | /api/players/ranking/loser  | Get loser             | ApiToken        |
+| **GET**      | /api/players/ranking/winner | Get winner            | ApiToken        |
+| **GET**      | /api/players/ranking        | Get ranking           | ApiToken        |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+Set user as admin on database: users table > select user > is_admin : 1
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Authors
+
+ [Carlos Martinez](https://carlosfullstack.es/)
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[MIT](https://opensource.org/licenses/MIT)
